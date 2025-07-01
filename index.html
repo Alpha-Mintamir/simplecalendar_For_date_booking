@@ -14,6 +14,8 @@
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f8fafc;
+            position: relative;
+            overflow-x: hidden;
         }
 
         .amharic-date {
@@ -32,17 +34,32 @@
             align-items: center;
             z-index: 50;
         }
+
+        .background-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            opacity: 0.06;
+            background-image: url('https://media.licdn.com/dms/image/v2/D4D22AQF4OIaa8Fiqfw/feedshare-shrink_800/B4DZe2Ay5rHkAg-/0/1751105353072?e=1754524800&v=beta&t=z5mRNxDRB62NCF61Ja8Da8LbVp5W2wBkClFYR_StbpI');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
     </style>
 </head>
 
 <body class="bg-gray-50 text-gray-800">
+    <div class="background-image"></div>
+
     <div id="app" class="container mx-auto p-4 md:p-8">
         <header class="text-center mb-8">
             <h1 class="text-3xl md:text-4xl font-bold text-gray-900">Course Booking Calendar</h1>
             <p class="mt-2 text-lg text-gray-600">Please select your preferred week and topic.</p>
             <p id="userIdDisplay" class="mt-2 text-xs text-gray-500 font-mono"></p>
-            <a href="admin.html" class="text-indigo-600 font-semibold underline">Admin</a>
-            <button id="adminLogout" class="ml-4 text-red-600 underline">Logout Admin</button>
+            
         </header>
 
         <div id="calendar-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
