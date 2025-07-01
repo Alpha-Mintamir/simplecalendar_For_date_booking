@@ -82,19 +82,16 @@
         import { getFirestore, doc, setDoc, deleteDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 const topics = [
-    { id: 'week_01', week: '01', ethopianDate: 'እሑድ፣ ሐምሌ 06', topic: "Python Basics, Conditionals, Loops", description: "Master Python basics, conditionals, and loops through problem sets and a mini-project." },
-    { id: 'week_02', week: '02', ethopianDate: 'እሑድ፣ ሐምሌ 13', topic: "Functions, Data Structures I (Lists & Tuples)", description: "Focus on functions, lists, and tuples with problem sets and a mini-project." },
-    { id: 'week_03', week: '03', ethopianDate: 'እሑድ፣ ሐምሌ 20', topic: "Data Structures II (Sets & Dictionaries)", description: "Learn about sets and dictionaries through problem sets and a mini-project." },
-    { id: 'week_04', week: '04', ethopianDate: 'እሑድ፣ ሐምሌ 27', topic: "File Handling, Error Handling", description: "Practice file handling and error handling with exercises and a mini-project." },
-    { id: 'week_05', week: '05', ethopianDate: 'እሑድ፣ ነሐሴ 04', topic: "Introduction to OOP", description: "Understand Object-Oriented Programming principles and apply them in a project." },
-    { id: 'week_06', week: '06', ethopianDate: 'እሑድ፣ ነሐሴ 11', topic: "OOP Continued: Inheritance and Polymorphism", description: "Deep dive into inheritance and polymorphism with exercises and a mini-project." },
-    { id: 'week_07', week: '07', ethopianDate: 'እሑድ፣ ነሐሴ 18', topic: "Working with Modules and Packages", description: "Learn about Python modules and packages and apply them in problem sets." },
-    { id: 'week_08', week: '08', ethopianDate: 'እሑድ፣ ነሐሴ 25', topic: "Introduction to APIs and JSON", description: "Work with APIs and JSON data in Python through exercises and a mini-project." },
-    { id: 'week_09', week: '09', ethopianDate: 'እሑድ፣ ዿጉሜ 2', topic: "Web Scraping Basics", description: "Learn web scraping using Python libraries and build a mini scraper project." },
-    { id: 'week_10', week: '10', ethopianDate: 'እሑድ፣ መስከረም 04', topic: "Introduction to Databases (SQL)", description: "Understand SQL and database operations with exercises and a database mini-project." },
-    { id: 'week_11', week: '11', ethopianDate: 'እሑድ፣ መስከረም 11', topic: "Python and Databases (SQLite/Postgres)", description: "Integrate Python with databases and build a CRUD application." },
-    { id: 'week_12', week: '12', ethopianDate: 'እሑድ፣ መስከረም 18', topic: "Final Project: Python CRUD System", description: "Build a complete Python CRUD system using everything you've learned." }
+    { id: 'week_01', week: '01', ethopianDate: 'እሑድ፣ ሐምሌ 06', topic: "Git and Python, Loops, Functions, DS Basics", description: "Intro to Git and Python, mastering loops, functions, and basic data structures." },
+    { id: 'week_02', week: '02', ethopianDate: 'እሑድ፣ ሐምሌ 13', topic: "Complexity, Arrays, Two Pointers, Sliding Window", description: "Learn algorithm complexity, arrays, and common techniques like two pointers and sliding window." },
+    { id: 'week_03', week: '03', ethopianDate: 'እሑድ፣ ሐምሌ 20', topic: "Prefix Sum, Sorting I", description: "Explore prefix sum techniques and sorting algorithms (part I)." },
+    { id: 'week_04', week: '04', ethopianDate: 'እሑድ፣ ሐምሌ 27', topic: "Linked Lists I & II, Recursion I", description: "Understand singly and doubly linked lists, and begin recursion." },
+    { id: 'week_05', week: '05', ethopianDate: 'እሑድ፣ ነሐሴ 04', topic: "Stacks, Queues, Monotonicity, Greedy, Recursion II", description: "Deep dive into stacks, queues, greedy problems, and recursive strategies." },
+    { id: 'week_06', week: '06', ethopianDate: 'እሑድ፣ ነሐሴ 11', topic: "Tree I & II", description: "Learn tree data structures, traversal techniques, and solving tree-based problems." },
+    { id: 'week_07', week: '07', ethopianDate: 'እሑድ፣ ነሐሴ 18', topic: "Binary Search, Sorting II Part 1", description: "Implement binary search and review advanced sorting methods." },
+    { id: 'week_08', week: '08', ethopianDate: 'እሑድ፣ ነሐሴ 25', topic: "Sorting II Part 2, Mixed Practice & Review", description: "Complete advanced sorting and wrap up with review and practice problems." }
 ];
+
 
         const calendarGrid = document.getElementById('calendar-grid');
         const loader = document.getElementById('loader');
