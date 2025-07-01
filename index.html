@@ -137,48 +137,51 @@
         }
 
         function renderCalendar(bookings = {}) {
-            calendarGrid.innerHTML = '';
-            topics.forEach(topic => {
-                const bookingInfo = bookings[topic.id];
-                const isBooked = !!bookingInfo;
+    calendarGrid.innerHTML = '';
+    topics.forEach(topic => {
+        const bookingInfo = bookings[topic.id];
+        const isBooked = !!bookingInfo;
 
-                const card = document.createElement('div');
-                card.className = `bg-white rounded-lg shadow-md p-6 flex flex-col transition-transform transform hover:scale-105 ${isBooked ? 'bg-gray-100' : ''}`;
+        const card = document.createElement('div');
+        card.className = `bg-white rounded-lg shadow-md p-6 flex flex-col transition-transform transform hover:scale-105 ${isBooked ? 'bg-gray-100' : ''}`;
 
-                let buttonHtml = '';
-                let bookedByHtml = '';
+        let buttonHtml = '';
+        let bookedByHtml = '';
 
-                if (isBooked) {
-                    bookedByHtml = `<p class="text-sm text-red-600 font-semibold mt-2">Booked by: ${bookingInfo.name}</p>`;
+        if (isBooked) {
+            bookedByHtml = `<p class="text-sm text-red-600 font-semibold mt-2">Booked by: ${bookingInfo.name}</p>`;
 
-                    console.log(`Week ${topic.week} bookedBy=${bookingInfo.bookedBy}, currentUser=${userId}, isAdmin=${isAdmin}`);
+            if (isAdmin && bookingInfo.email) {
+                bookedByHtml += `<p class="text-sm text-gray-700">Email: ${bookingInfo.email}</p>`;
+            }
 
-                    if (bookingInfo.bookedBy === userId || isAdmin) {
-                        buttonHtml = `<button data-week-id="${topic.id}" class="unbook-btn mt-auto w-full px-4 py-2 text-sm font-semibold text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">Unbook</button>`;
-                    } else {
-                        buttonHtml = `<button disabled class="mt-auto w-full px-4 py-2 text-sm font-semibold text-white bg-gray-400 rounded-md cursor-not-allowed">Booked</button>`;
-                    }
-                } else {
-                    buttonHtml = `<button data-week-id="${topic.id}" class="book-btn mt-auto w-full px-4 py-2 text-sm font-semibold text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Book</button>`;
-                }
-
-                card.innerHTML = `
-                    <div class="flex justify-between items-start mb-2">
-                        <span class="font-bold text-lg text-indigo-700">Week ${topic.week}</span>
-                        <span class="amharic-date font-semibold text-gray-600">${topic.ethopianDate}</span>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-2">${topic.topic}</h3>
-                    <p class="text-gray-600 text-sm mb-4 flex-grow">${topic.description}</p>
-                    ${bookedByHtml}
-                    ${buttonHtml}
-                `;
-
-                calendarGrid.appendChild(card);
-            });
-
-            loader.style.display = 'none';
-            calendarGrid.style.display = 'grid';
+            if (bookingInfo.bookedBy === userId || isAdmin) {
+                buttonHtml = `<button data-week-id="${topic.id}" class="unbook-btn mt-auto w-full px-4 py-2 text-sm font-semibold text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">Unbook</button>`;
+            } else {
+                buttonHtml = `<button disabled class="mt-auto w-full px-4 py-2 text-sm font-semibold text-white bg-gray-400 rounded-md cursor-not-allowed">Booked</button>`;
+            }
+        } else {
+            buttonHtml = `<button data-week-id="${topic.id}" class="book-btn mt-auto w-full px-4 py-2 text-sm font-semibold text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Book</button>`;
         }
+
+        card.innerHTML = `
+            <div class="flex justify-between items-start mb-2">
+                <span class="font-bold text-lg text-indigo-700">Week ${topic.week}</span>
+                <span class="amharic-date font-semibold text-gray-600">${topic.ethopianDate}</span>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-2">${topic.topic}</h3>
+            <p class="text-gray-600 text-sm mb-4 flex-grow">${topic.description}</p>
+            ${bookedByHtml}
+            ${buttonHtml}
+        `;
+
+        calendarGrid.appendChild(card);
+    });
+
+    loader.style.display = 'none';
+    calendarGrid.style.display = 'grid';
+}
+
 
         function openModal(weekId) {
             const topic = topics.find(t => t.id === weekId);
