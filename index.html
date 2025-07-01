@@ -1,15 +1,14 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Bookable Course Calendar</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Ethiopic:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Ethiopic:wght@400;700&display=swap" rel="stylesheet" />
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -42,7 +41,6 @@
             <p class="mt-2 text-lg text-gray-600">Please select your preferred week and topic.</p>
             <p id="userIdDisplay" class="mt-2 text-xs text-gray-500 font-mono"></p>
             <a href="admin.html" class="text-indigo-600 font-semibold underline">Admin</a>
-
         </header>
 
         <div id="calendar-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
@@ -58,18 +56,22 @@
             <h2 class="text-2xl font-bold mb-4">Confirm Booking</h2>
             <p id="modal-text" class="mb-6 text-gray-700">Please enter your details to book this slot.</p>
             <form id="booking-form">
-                <input type="hidden" id="booking-week-id">
+                <input type="hidden" id="booking-week-id" />
                 <div class="mb-4">
                     <label for="userName" class="block text-sm font-medium text-gray-700">Full Name</label>
-                    <input type="text" id="userName" name="userName" required class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                    <input type="text" id="userName" name="userName" required
+                        class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" />
                 </div>
                 <div class="mb-6">
                     <label for="userEmail" class="block text-sm font-medium text-gray-700">Email Address</label>
-                    <input type="email" id="userEmail" name="userEmail" required class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                    <input type="email" id="userEmail" name="userEmail" required
+                        class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" />
                 </div>
                 <div class="flex justify-end space-x-4">
-                    <button type="button" id="cancel-booking" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">Cancel</button>
-                    <button type="submit" class="px-4 py-2 bg-indigo-600 text-white font-semibold rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Confirm</button>
+                    <button type="button" id="cancel-booking"
+                        class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">Cancel</button>
+                    <button type="submit"
+                        class="px-4 py-2 bg-indigo-600 text-white font-semibold rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Confirm</button>
                 </div>
             </form>
         </div>
@@ -81,17 +83,16 @@
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, deleteDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-const topics = [
-    { id: 'week_01', week: '01', ethopianDate: 'እሑድ፣ ሐምሌ 06', topic: "Git and Python, Loops, Functions, DS Basics", description: "Intro to Git and Python, mastering loops, functions, and basic data structures." },
-    { id: 'week_02', week: '02', ethopianDate: 'እሑድ፣ ሐምሌ 13', topic: "Complexity, Arrays, Two Pointers, Sliding Window", description: "Learn algorithm complexity, arrays, and common techniques like two pointers and sliding window." },
-    { id: 'week_03', week: '03', ethopianDate: 'እሑድ፣ ሐምሌ 20', topic: "Prefix Sum, Sorting I", description: "Explore prefix sum techniques and sorting algorithms (part I)." },
-    { id: 'week_04', week: '04', ethopianDate: 'እሑድ፣ ሐምሌ 27', topic: "Linked Lists I & II, Recursion I", description: "Understand singly and doubly linked lists, and begin recursion." },
-    { id: 'week_05', week: '05', ethopianDate: 'እሑድ፣ ነሐሴ 04', topic: "Stacks, Queues, Monotonicity, Greedy, Recursion II", description: "Deep dive into stacks, queues, greedy problems, and recursive strategies." },
-    { id: 'week_06', week: '06', ethopianDate: 'እሑድ፣ ነሐሴ 11', topic: "Tree I & II", description: "Learn tree data structures, traversal techniques, and solving tree-based problems." },
-    { id: 'week_07', week: '07', ethopianDate: 'እሑድ፣ ነሐሴ 18', topic: "Binary Search, Sorting II Part 1", description: "Implement binary search and review advanced sorting methods." },
-    { id: 'week_08', week: '08', ethopianDate: 'እሑድ፣ ነሐሴ 25', topic: "Sorting II Part 2, Mixed Practice & Review", description: "Complete advanced sorting and wrap up with review and practice problems." }
-];
-
+        const topics = [
+            { id: 'week_01', week: '01', ethopianDate: 'እሑድ፣ ሐምሌ 06', topic: "Git and Python, Loops, Functions, DS Basics", description: "Intro to Git and Python, mastering loops, functions, and basic data structures." },
+            { id: 'week_02', week: '02', ethopianDate: 'እሑድ፣ ሐምሌ 13', topic: "Complexity, Arrays, Two Pointers, Sliding Window", description: "Learn algorithm complexity, arrays, and common techniques like two pointers and sliding window." },
+            { id: 'week_03', week: '03', ethopianDate: 'እሑድ፣ ሐምሌ 20', topic: "Prefix Sum, Sorting I", description: "Explore prefix sum techniques and sorting algorithms (part I)." },
+            { id: 'week_04', week: '04', ethopianDate: 'እሑድ፣ ሐምሌ 27', topic: "Linked Lists I & II, Recursion I", description: "Understand singly and doubly linked lists, and begin recursion." },
+            { id: 'week_05', week: '05', ethopianDate: 'እሑድ፣ ነሐሴ 04', topic: "Stacks, Queues, Monotonicity, Greedy, Recursion II", description: "Deep dive into stacks, queues, greedy problems, and recursive strategies." },
+            { id: 'week_06', week: '06', ethopianDate: 'እሑድ፣ ነሐሴ 11', topic: "Tree I & II", description: "Learn tree data structures, traversal techniques, and solving tree-based problems." },
+            { id: 'week_07', week: '07', ethopianDate: 'እሑድ፣ ነሐሴ 18', topic: "Binary Search, Sorting II Part 1", description: "Implement binary search and review advanced sorting methods." },
+            { id: 'week_08', week: '08', ethopianDate: 'እሑድ፣ ነሐሴ 25', topic: "Sorting II Part 2, Mixed Practice & Review", description: "Complete advanced sorting and wrap up with review and practice problems." }
+        ];
 
         const calendarGrid = document.getElementById('calendar-grid');
         const loader = document.getElementById('loader');
@@ -105,26 +106,19 @@ const topics = [
         let db, auth;
         let userId = null;
 
-        // Replace this with your actual admin UID
-        const adminUID = 'REPLACE_WITH_ADMIN_UID';
+        const adminUID = 'admin-local';
+        const isAdmin = localStorage.getItem('isAdmin') === 'true';
 
         try {
             const firebaseConfig = {
-
-  apiKey: "AIzaSyDZuM_bRI5y-LeL65KprmCvxS2laGwqv1s",
-
-  authDomain: "course-booking-calendar.firebaseapp.com",
-
-  projectId: "course-booking-calendar",
-
-  storageBucket: "course-booking-calendar.firebasestorage.app",
-
-  messagingSenderId: "447571223264",
-
-  appId: "1:447571223264:web:68d4b1edec759a69e16685",
-
-  measurementId: "G-KTZD53X0ZV"
-            }
+                apiKey: "AIzaSyDZuM_bRI5y-LeL65KprmCvxS2laGwqv1s",
+                authDomain: "course-booking-calendar.firebaseapp.com",
+                projectId: "course-booking-calendar",
+                storageBucket: "course-booking-calendar.firebasestorage.app",
+                messagingSenderId: "447571223264",
+                appId: "1:447571223264:web:68d4b1edec759a69e16685",
+                measurementId: "G-KTZD53X0ZV"
+            };
             const app = initializeApp(firebaseConfig);
             db = getFirestore(app);
             auth = getAuth(app);
@@ -247,12 +241,10 @@ const topics = [
             }
         });
 
-        bookingForm.addEventListener('submit', handleBookingSubmit);
-
         onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                userId = user.uid;
-                userIdDisplay.textContent = `Your User ID: ${userId}`;
+            if (user || isAdmin) {
+                userId = isAdmin ? adminUID : user.uid;
+                userIdDisplay.textContent = `Your User ID: ${userId} ${isAdmin ? '(Admin)' : ''}`;
 
                 const bookingsColRef = collection(db, `artifacts/default-app-id/public/data/calendarBookings`);
                 onSnapshot(bookingsColRef, (snapshot) => {
