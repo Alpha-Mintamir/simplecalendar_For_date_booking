@@ -8,7 +8,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Ethiopic:wght@400;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Ethiopic:wght@400;700&display=swap"
+        rel="stylesheet" />
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -41,6 +42,7 @@
             <p class="mt-2 text-lg text-gray-600">Please select your preferred week and topic.</p>
             <p id="userIdDisplay" class="mt-2 text-xs text-gray-500 font-mono"></p>
             <a href="admin.html" class="text-indigo-600 font-semibold underline">Admin</a>
+            <button id="adminLogout" class="ml-4 text-red-600 underline">Logout Admin</button>
         </header>
 
         <div id="calendar-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
@@ -102,12 +104,19 @@
         const cancelBtn = document.getElementById('cancel-booking');
         const bookingWeekIdInput = document.getElementById('booking-week-id');
         const userIdDisplay = document.getElementById('userIdDisplay');
+        const adminLogoutBtn = document.getElementById('adminLogout');
 
         let db, auth;
         let userId = null;
 
         const adminUID = 'admin-local';
         const isAdmin = localStorage.getItem('isAdmin') === 'true';
+
+        adminLogoutBtn.addEventListener('click', () => {
+            localStorage.removeItem('isAdmin');
+            alert('Admin logged out.');
+            location.reload();
+        });
 
         try {
             const firebaseConfig = {
@@ -142,7 +151,9 @@
                 if (isBooked) {
                     bookedByHtml = `<p class="text-sm text-red-600 font-semibold mt-2">Booked by: ${bookingInfo.name}</p>`;
 
-                    if (bookingInfo.bookedBy === userId || userId === adminUID) {
+                    console.log(`Week ${topic.week} bookedBy=${bookingInfo.bookedBy}, currentUser=${userId}, isAdmin=${isAdmin}`);
+
+                    if (bookingInfo.bookedBy === userId || isAdmin) {
                         buttonHtml = `<button data-week-id="${topic.id}" class="unbook-btn mt-auto w-full px-4 py-2 text-sm font-semibold text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">Unbook</button>`;
                     } else {
                         buttonHtml = `<button disabled class="mt-auto w-full px-4 py-2 text-sm font-semibold text-white bg-gray-400 rounded-md cursor-not-allowed">Booked</button>`;
@@ -243,7 +254,11 @@
 
         onAuthStateChanged(auth, async (user) => {
             if (user || isAdmin) {
-                userId = isAdmin ? adminUID : user.uid;
+                if (isAdmin) {
+                    userId = adminUID;
+                } else {
+                    userId = user.uid;
+                }
                 userIdDisplay.textContent = `Your User ID: ${userId} ${isAdmin ? '(Admin)' : ''}`;
 
                 const bookingsColRef = collection(db, `artifacts/default-app-id/public/data/calendarBookings`);
