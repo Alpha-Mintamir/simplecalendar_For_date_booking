@@ -2,160 +2,169 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Bookable Course Calendar</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Ethiopic:wght@400;700&display=swap"
-        rel="stylesheet" />
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8fafc;
-            position: relative;
-            overflow-x: hidden;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bookable Course Calendar</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Ethiopic:wght@400;700&display=swap"
+    rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8fafc;
+      position: relative;
+      overflow-x: hidden;
+    }
 
-        .amharic-date {
-            font-family: 'Noto Sans Ethiopic', sans-serif;
-        }
+    .amharic-date {
+      font-family: 'Noto Sans Ethiopic', sans-serif;
+    }
 
-        .modal-backdrop {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 50;
-        }
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 50;
+    }
 
-        .background-image {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -1;
-            opacity: 0.06;
-            background-image: url('https://media.licdn.com/dms/image/v2/D4D22AQF4OIaa8Fiqfw/feedshare-shrink_800/B4DZe2Ay5rHkAg-/0/1751105353072?e=1754524800&v=beta&t=z5mRNxDRB62NCF61Ja8Da8LbVp5W2wBkClFYR_StbpI');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-        }
-    </style>
+    .background-wrapper::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      width: 100vw;
+      z-index: -1;
+      background-image: url('https://media.licdn.com/dms/image/v2/D4D22AQF4OIaa8Fiqfw/feedshare-shrink_2048_1536/B4DZe2Ay5rHkAo-/0/1751105353113?e=1754524800&v=beta&t=G4WuV_YswFpktZRIDuzW3mWIoDUflxoh6sRl-fYHaFw');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      opacity: 0.2;
+      filter: brightness(0.7) blur(2px);
+    }
+  </style>
 </head>
 
 <body class="bg-gray-50 text-gray-800">
-    <div class="background-image"></div>
+  <div class="background-wrapper"></div>
 
-    <div id="app" class="container mx-auto p-4 md:p-8">
-        <header class="text-center mb-8">
-            <h1 class="text-3xl md:text-4xl font-bold text-gray-900">Course Booking Calendar</h1>
-            <p class="mt-2 text-lg text-gray-600">Please select your preferred week and topic.</p>
-            <p id="userIdDisplay" class="mt-2 text-xs text-gray-500 font-mono"></p>
-            
-        </header>
+  <div id="app" class="container mx-auto p-4 md:p-8">
+    <header class="text-center mb-8">
+      <h1 class="text-3xl md:text-4xl font-bold text-gray-900">Course Booking Calendar</h1>
+      <p class="mt-2 text-lg text-gray-600">Please select your preferred week and topic.</p>
+      <p id="userIdDisplay" class="mt-2 text-xs text-gray-500 font-mono"></p>
+      <button id="adminLogout" class="ml-4 text-red-600 underline hidden">Logout Admin</button>
+    </header>
 
-        <div id="calendar-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    <div id="calendar-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
 
-        <div id="loader" class="text-center p-8">
-            <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
-            <p class="mt-4 text-gray-600">Loading Calendar...</p>
-        </div>
+    <div id="loader" class="text-center p-8">
+      <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+      <p class="mt-4 text-gray-600">Loading Calendar...</p>
     </div>
+  </div>
 
-    <div id="booking-modal" class="modal-backdrop hidden">
-        <div class="bg-white rounded-lg shadow-xl p-8 w-11/12 md:max-w-md mx-auto">
-            <h2 class="text-2xl font-bold mb-4">Confirm Booking</h2>
-            <p id="modal-text" class="mb-6 text-gray-700">Please enter your details to book this slot.</p>
-            <form id="booking-form">
-                <input type="hidden" id="booking-week-id" />
-                <div class="mb-4">
-                    <label for="userName" class="block text-sm font-medium text-gray-700">Full Name</label>
-                    <input type="text" id="userName" name="userName" required
-                        class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" />
-                </div>
-                <div class="mb-6">
-                    <label for="userEmail" class="block text-sm font-medium text-gray-700">Email Address</label>
-                    <input type="email" id="userEmail" name="userEmail" required
-                        class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" />
-                </div>
-                <div class="flex justify-end space-x-4">
-                    <button type="button" id="cancel-booking"
-                        class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">Cancel</button>
-                    <button type="submit"
-                        class="px-4 py-2 bg-indigo-600 text-white font-semibold rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Confirm</button>
-                </div>
-            </form>
+  <div id="booking-modal" class="modal-backdrop hidden">
+    <div class="bg-white rounded-lg shadow-xl p-8 w-11/12 md:max-w-md mx-auto">
+      <h2 class="text-2xl font-bold mb-4">Confirm Booking</h2>
+      <p id="modal-text" class="mb-6 text-gray-700">Please enter your details to book this slot.</p>
+      <form id="booking-form">
+        <input type="hidden" id="booking-week-id" />
+        <div class="mb-4">
+          <label for="userName" class="block text-sm font-medium text-gray-700">Full Name</label>
+          <input type="text" id="userName" name="userName" required
+            class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" />
         </div>
+        <div class="mb-6">
+          <label for="userEmail" class="block text-sm font-medium text-gray-700">Email Address</label>
+          <input type="email" id="userEmail" name="userEmail" required
+            class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" />
+        </div>
+        <div class="flex justify-end space-x-4">
+          <button type="button" id="cancel-booking"
+            class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">Cancel</button>
+          <button type="submit"
+            class="px-4 py-2 bg-indigo-600 text-white font-semibold rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Confirm</button>
+        </div>
+      </form>
     </div>
+  </div>
 
-    <!-- Firebase SDK -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, deleteDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc, deleteDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        const topics = [
-            { id: 'week_01', week: '01', ethopianDate: 'እሑድ፣ ሐምሌ 06', topic: "Git and Python, Loops, Functions, DS Basics", description: "Intro to Git and Python, mastering loops, functions, and basic data structures." },
-            { id: 'week_02', week: '02', ethopianDate: 'እሑድ፣ ሐምሌ 13', topic: "Complexity, Arrays, Two Pointers, Sliding Window", description: "Learn algorithm complexity, arrays, and common techniques like two pointers and sliding window." },
-            { id: 'week_03', week: '03', ethopianDate: 'እሑድ፣ ሐምሌ 20', topic: "Prefix Sum, Sorting I", description: "Explore prefix sum techniques and sorting algorithms (part I)." },
-            { id: 'week_04', week: '04', ethopianDate: 'እሑድ፣ ሐምሌ 27', topic: "Linked Lists I & II, Recursion I", description: "Understand singly and doubly linked lists, and begin recursion." },
-            { id: 'week_05', week: '05', ethopianDate: 'እሑድ፣ ነሐሴ 04', topic: "Stacks, Queues, Monotonicity, Greedy, Recursion II", description: "Deep dive into stacks, queues, greedy problems, and recursive strategies." },
-            { id: 'week_06', week: '06', ethopianDate: 'እሑድ፣ ነሐሴ 11', topic: "Tree I & II", description: "Learn tree data structures, traversal techniques, and solving tree-based problems." },
-            { id: 'week_07', week: '07', ethopianDate: 'እሑድ፣ ነሐሴ 18', topic: "Binary Search, Sorting II Part 1", description: "Implement binary search and review advanced sorting methods." },
-            { id: 'week_08', week: '08', ethopianDate: 'እሑድ፣ ነሐሴ 25', topic: "Sorting II Part 2, Mixed Practice & Review", description: "Complete advanced sorting and wrap up with review and practice problems." }
-        ];
+    const topics = [
+      { id: 'week_01', week: '01', ethopianDate: 'እሑድ፣ ሐምሌ 06', topic: "Git and Python, Loops, Functions, DS Basics", description: "Intro to Git and Python, mastering loops, functions, and basic data structures." },
+      { id: 'week_02', week: '02', ethopianDate: 'እሑድ፣ ሐምሌ 13', topic: "Complexity, Arrays, Two Pointers, Sliding Window", description: "Learn algorithm complexity, arrays, and common techniques like two pointers and sliding window." },
+      { id: 'week_03', week: '03', ethopianDate: 'እሑድ፣ ሐምሌ 20', topic: "Prefix Sum, Sorting I", description: "Explore prefix sum techniques and sorting algorithms (part I)." },
+      { id: 'week_04', week: '04', ethopianDate: 'እሑድ፣ ሐምሌ 27', topic: "Linked Lists I & II, Recursion I", description: "Understand singly and doubly linked lists, and begin recursion." },
+      { id: 'week_05', week: '05', ethopianDate: 'እሑድ፣ ነሐሴ 04', topic: "Stacks, Queues, Monotonicity, Greedy, Recursion II", description: "Deep dive into stacks, queues, greedy problems, and recursive strategies." },
+      { id: 'week_06', week: '06', ethopianDate: 'እሑድ፣ ነሐሴ 11', topic: "Tree I & II", description: "Learn tree data structures, traversal techniques, and solving tree-based problems." },
+      { id: 'week_07', week: '07', ethopianDate: 'እሑድ፣ ነሐሴ 18', topic: "Binary Search, Sorting II Part 1", description: "Implement binary search and review advanced sorting methods." },
+      { id: 'week_08', week: '08', ethopianDate: 'እሑድ፣ ነሐሴ 25', topic: "Sorting II Part 2, Mixed Practice & Review", description: "Complete advanced sorting and wrap up with review and practice problems." }
+    ];
 
-        const calendarGrid = document.getElementById('calendar-grid');
-        const loader = document.getElementById('loader');
-        const modal = document.getElementById('booking-modal');
-        const modalText = document.getElementById('modal-text');
-        const bookingForm = document.getElementById('booking-form');
-        const cancelBtn = document.getElementById('cancel-booking');
-        const bookingWeekIdInput = document.getElementById('booking-week-id');
-        const userIdDisplay = document.getElementById('userIdDisplay');
-        const adminLogoutBtn = document.getElementById('adminLogout');
+    const adminUID = 'admin-local';
+    const isAdmin = localStorage.getItem('isAdmin') === 'true';
 
-        let db, auth;
-        let userId = null;
+    const adminLogoutBtn = document.getElementById('adminLogout');
+    const calendarGrid = document.getElementById('calendar-grid');
+    const loader = document.getElementById('loader');
+    const modal = document.getElementById('booking-modal');
+    const modalText = document.getElementById('modal-text');
+    const bookingForm = document.getElementById('booking-form');
+    const cancelBtn = document.getElementById('cancel-booking');
+    const bookingWeekIdInput = document.getElementById('booking-week-id');
+    const userIdDisplay = document.getElementById('userIdDisplay');
 
-        const adminUID = 'admin-local';
-        const isAdmin = localStorage.getItem('isAdmin') === 'true';
+    let db, auth;
+    let userId = null;
 
-        adminLogoutBtn.addEventListener('click', () => {
-            localStorage.removeItem('isAdmin');
-            alert('Admin logged out.');
-            location.reload();
-        });
+    if (isAdmin) {
+      adminLogoutBtn.classList.remove('hidden');
+    } else {
+      adminLogoutBtn.classList.add('hidden');
+    }
 
-        try {
-            const firebaseConfig = {
-                apiKey: "AIzaSyDZuM_bRI5y-LeL65KprmCvxS2laGwqv1s",
-                authDomain: "course-booking-calendar.firebaseapp.com",
-                projectId: "course-booking-calendar",
-                storageBucket: "course-booking-calendar.firebasestorage.app",
-                messagingSenderId: "447571223264",
-                appId: "1:447571223264:web:68d4b1edec759a69e16685",
-                measurementId: "G-KTZD53X0ZV"
-            };
-            const app = initializeApp(firebaseConfig);
-            db = getFirestore(app);
-            auth = getAuth(app);
-        } catch (e) {
-            console.error("Firebase initialization failed:", e);
-            loader.textContent = 'Failed to load calendar. Please refresh the page.';
-        }
+    adminLogoutBtn.addEventListener('click', () => {
+      localStorage.removeItem('isAdmin');
+      alert('Admin logged out.');
+      location.reload();  // reload page after logout to update UI
+    });
 
-        function renderCalendar(bookings = {}) {
-    calendarGrid.innerHTML = '';
-    topics.forEach(topic => {
+    try {
+      const firebaseConfig = {
+        apiKey: "AIzaSyDZuM_bRI5y-LeL65KprmCvxS2laGwqv1s",
+        authDomain: "course-booking-calendar.firebaseapp.com",
+        projectId: "course-booking-calendar",
+        storageBucket: "course-booking-calendar.firebasestorage.app",
+        messagingSenderId: "447571223264",
+        appId: "1:447571223264:web:68d4b1edec759a69e16685",
+        measurementId: "G-KTZD53X0ZV"
+      };
+      const app = initializeApp(firebaseConfig);
+      db = getFirestore(app);
+      auth = getAuth(app);
+    } catch (e) {
+      console.error("Firebase initialization failed:", e);
+      loader.textContent = 'Failed to load calendar. Please refresh the page.';
+    }
+
+    function renderCalendar(bookings = {}) {
+      calendarGrid.innerHTML = '';
+      topics.forEach(topic => {
         const bookingInfo = bookings[topic.id];
         const isBooked = !!bookingInfo;
 
@@ -166,19 +175,19 @@
         let bookedByHtml = '';
 
         if (isBooked) {
-            bookedByHtml = `<p class="text-sm text-red-600 font-semibold mt-2">Booked by: ${bookingInfo.name}</p>`;
+          bookedByHtml = `<p class="text-sm text-red-600 font-semibold mt-2">Booked by: ${bookingInfo.name}</p>`;
 
-            if (isAdmin && bookingInfo.email) {
-                bookedByHtml += `<p class="text-sm text-gray-700">Email: ${bookingInfo.email}</p>`;
-            }
+          if (isAdmin && bookingInfo.email) {
+            bookedByHtml += `<p class="text-sm text-gray-700">Email: ${bookingInfo.email}</p>`;
+          }
 
-            if (bookingInfo.bookedBy === userId || isAdmin) {
-                buttonHtml = `<button data-week-id="${topic.id}" class="unbook-btn mt-auto w-full px-4 py-2 text-sm font-semibold text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">Unbook</button>`;
-            } else {
-                buttonHtml = `<button disabled class="mt-auto w-full px-4 py-2 text-sm font-semibold text-white bg-gray-400 rounded-md cursor-not-allowed">Booked</button>`;
-            }
+          if (bookingInfo.bookedBy === userId || isAdmin) {
+            buttonHtml = `<button data-week-id="${topic.id}" class="unbook-btn mt-auto w-full px-4 py-2 text-sm font-semibold text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">Unbook</button>`;
+          } else {
+            buttonHtml = `<button disabled class="mt-auto w-full px-4 py-2 text-sm font-semibold text-white bg-gray-400 rounded-md cursor-not-allowed">Booked</button>`;
+          }
         } else {
-            buttonHtml = `<button data-week-id="${topic.id}" class="book-btn mt-auto w-full px-4 py-2 text-sm font-semibold text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Book</button>`;
+          buttonHtml = `<button data-week-id="${topic.id}" class="book-btn mt-auto w-full px-4 py-2 text-sm font-semibold text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Book</button>`;
         }
 
         card.innerHTML = `
@@ -193,121 +202,118 @@
         `;
 
         calendarGrid.appendChild(card);
+      });
+
+      loader.style.display = 'none';
+      calendarGrid.style.display = 'grid';
+    }
+
+    function closeModal() {
+      modal.classList.add('hidden');
+      bookingForm.reset();
+    }
+
+    function openModal(weekId) {
+      bookingWeekIdInput.value = weekId;
+      modal.classList.remove('hidden');
+    }
+
+    async function handleBookingSubmit(e) {
+      e.preventDefault();
+      const weekId = bookingWeekIdInput.value;
+      const name = document.getElementById('userName').value.trim();
+      const email = document.getElementById('userEmail').value.trim();
+
+      if (!weekId || !name || !email) {
+        console.error("Missing booking information");
+        return;
+      }
+
+      try {
+        const bookingRef = doc(db, `artifacts/default-app-id/public/data/calendarBookings`, weekId);
+        await setDoc(bookingRef, {
+          isBooked: true,
+          name: name,
+          email: email,
+          bookedBy: userId,
+          timestamp: new Date()
+        });
+        closeModal();
+      } catch (error) {
+        console.error("Error writing document: ", error);
+        alert("Could not save your booking. Please try again.");
+      }
+    }
+
+    async function handleUnbook(weekId) {
+      try {
+        const bookingRef = doc(db, `artifacts/default-app-id/public/data/calendarBookings`, weekId);
+        await deleteDoc(bookingRef);
+      } catch (error) {
+        console.error("Error deleting booking: ", error);
+        alert("Could not unbook. Please try again.");
+      }
+    }
+
+    calendarGrid.addEventListener('click', (e) => {
+      if (e.target.classList.contains('book-btn')) {
+        const weekId = e.target.dataset.weekId;
+        openModal(weekId);
+      }
+
+      if (e.target.classList.contains('unbook-btn')) {
+        const weekId = e.target.dataset.weekId;
+        if (confirm("Are you sure you want to unbook this slot?")) {
+          handleUnbook(weekId);
+        }
+      }
     });
 
-    loader.style.display = 'none';
-    calendarGrid.style.display = 'grid';
-}
+    cancelBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        closeModal();
+      }
+    });
 
-
-        function openModal(weekId) {
-            const topic = topics.find(t => t.id === weekId);
-            if (topic) {
-                modalText.textContent = `You are booking Week ${topic.week}: ${topic.topic}.`;
-                bookingWeekIdInput.value = weekId;
-                modal.classList.remove('hidden');
-            }
+    onAuthStateChanged(auth, async (user) => {
+      if (user || isAdmin) {
+        if (isAdmin) {
+          userId = adminUID;
+        } else {
+          userId = user.uid;
         }
+        userIdDisplay.textContent = `Your User ID: ${userId} ${isAdmin ? '(Admin)' : ''}`;
 
-        function closeModal() {
-            modal.classList.add('hidden');
-            bookingForm.reset();
-        }
-
-        async function handleBookingSubmit(e) {
-            e.preventDefault();
-            const weekId = bookingWeekIdInput.value;
-            const name = document.getElementById('userName').value.trim();
-            const email = document.getElementById('userEmail').value.trim();
-
-            if (!weekId || !name || !email) {
-                console.error("Missing booking information");
-                return;
-            }
-
-            try {
-                const bookingRef = doc(db, `artifacts/default-app-id/public/data/calendarBookings`, weekId);
-                await setDoc(bookingRef, {
-                    isBooked: true,
-                    name: name,
-                    email: email,
-                    bookedBy: userId,
-                    timestamp: new Date()
-                });
-                closeModal();
-            } catch (error) {
-                console.error("Error writing document: ", error);
-                alert("Could not save your booking. Please try again.");
-            }
-        }
-
-        async function handleUnbook(weekId) {
-            try {
-                const bookingRef = doc(db, `artifacts/default-app-id/public/data/calendarBookings`, weekId);
-                await deleteDoc(bookingRef);
-            } catch (error) {
-                console.error("Error deleting booking: ", error);
-                alert("Could not unbook. Please try again.");
-            }
-        }
-
-        calendarGrid.addEventListener('click', (e) => {
-            if (e.target.classList.contains('book-btn')) {
-                const weekId = e.target.dataset.weekId;
-                openModal(weekId);
-            }
-
-            if (e.target.classList.contains('unbook-btn')) {
-                const weekId = e.target.dataset.weekId;
-                if (confirm("Are you sure you want to unbook this slot?")) {
-                    handleUnbook(weekId);
-                }
-            }
+        const bookingsColRef = collection(db, `artifacts/default-app-id/public/data/calendarBookings`);
+        onSnapshot(bookingsColRef, (snapshot) => {
+          const bookings = {};
+          snapshot.forEach((doc) => {
+            bookings[doc.id] = doc.data();
+          });
+          renderCalendar(bookings);
+        }, (error) => {
+          console.error("Error listening to bookings collection:", error);
+          loader.textContent = 'Error loading calendar data.';
         });
 
-        cancelBtn.addEventListener('click', closeModal);
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                closeModal();
-            }
-        });
+      } else {
+        userIdDisplay.textContent = 'Authenticating...';
+        try {
+          if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+            await signInWithCustomToken(auth, __initial_auth_token);
+          } else {
+            await signInAnonymously(auth);
+          }
+        } catch (error) {
+          console.error("Authentication failed:", error);
+          loader.textContent = 'Authentication failed. Please refresh.';
+        }
+      }
+    });
 
-        onAuthStateChanged(auth, async (user) => {
-            if (user || isAdmin) {
-                if (isAdmin) {
-                    userId = adminUID;
-                } else {
-                    userId = user.uid;
-                }
-                userIdDisplay.textContent = `Your User ID: ${userId} ${isAdmin ? '(Admin)' : ''}`;
-
-                const bookingsColRef = collection(db, `artifacts/default-app-id/public/data/calendarBookings`);
-                onSnapshot(bookingsColRef, (snapshot) => {
-                    const bookings = {};
-                    snapshot.forEach((doc) => {
-                        bookings[doc.id] = doc.data();
-                    });
-                    renderCalendar(bookings);
-                }, (error) => {
-                    console.error("Error listening to bookings collection:", error);
-                    loader.textContent = 'Error loading calendar data.';
-                });
-
-            } else {
-                userIdDisplay.textContent = 'Authenticating...';
-                try {
-                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                        await signInWithCustomToken(auth, __initial_auth_token);
-                    } else {
-                        await signInAnonymously(auth);
-                    }
-                } catch (error) {
-                    console.error("Authentication failed:", error);
-                    loader.textContent = 'Authentication failed. Please refresh.';
-                }
-            }
-        });
-    </script>
+    bookingForm.addEventListener('submit', handleBookingSubmit);
+  </script>
 </body>
 
 </html>
