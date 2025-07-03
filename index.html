@@ -105,16 +105,27 @@
     import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
     import { getFirestore, doc, setDoc, deleteDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-    const topics = [
-      { id: 'week_01', week: '01', ethopianDate: 'እሑድ፣ ሐምሌ 06', topic: "Git and Python, Loops, Functions, DS Basics", description: "Intro to Git and Python, mastering loops, functions, and basic data structures." },
-      { id: 'week_02', week: '02', ethopianDate: 'እሑድ፣ ሐምሌ 13', topic: "Complexity, Arrays, Two Pointers, Sliding Window", description: "Learn algorithm complexity, arrays, and common techniques like two pointers and sliding window." },
-      { id: 'week_03', week: '03', ethopianDate: 'እሑድ፣ ሐምሌ 20', topic: "Prefix Sum, Sorting I", description: "Explore prefix sum techniques and sorting algorithms (part I)." },
-      { id: 'week_04', week: '04', ethopianDate: 'እሑድ፣ ሐምሌ 27', topic: "Linked Lists I & II, Recursion I", description: "Understand singly and doubly linked lists, and begin recursion." },
-      { id: 'week_05', week: '05', ethopianDate: 'እሑድ፣ ነሐሴ 04', topic: "Stacks, Queues, Monotonicity, Greedy, Recursion II", description: "Deep dive into stacks, queues, greedy problems, and recursive strategies." },
-      { id: 'week_06', week: '06', ethopianDate: 'እሑድ፣ ነሐሴ 11', topic: "Tree I & II", description: "Learn tree data structures, traversal techniques, and solving tree-based problems." },
-      { id: 'week_07', week: '07', ethopianDate: 'እሑድ፣ ነሐሴ 18', topic: "Binary Search, Sorting II Part 1", description: "Implement binary search and review advanced sorting methods." },
-      { id: 'week_08', week: '08', ethopianDate: 'እሑድ፣ ነሐሴ 25', topic: "Sorting II Part 2, Mixed Practice & Review", description: "Complete advanced sorting and wrap up with review and practice problems." }
-    ];
+const topics = [
+  { id: 'session_01', week: '01', day: 'Sunday', ethopianDate: 'ሐምሌ 06', topic: "Python Basics, Conditionals, Loops & Functions", description: "Covers basic syntax, control flow, and function creation in Python." },
+  { id: 'session_02', week: '01', day: 'Wednesday', ethopianDate: 'ሐምሌ 09', topic: "Data Structures Basics: Lists & Tuples + Built-in Functions and Classes", description: "Understanding Python collections, built-in tools, and object introspection." },
+  { id: 'session_03', week: '02', day: 'Sunday', ethopianDate: 'ሐምሌ 13', topic: "Git 1: Git Basics, Commands, Repositories", description: "Learn Git commands, init, add, commit, and repository basics." },
+  { id: 'session_04', week: '02', day: 'Wednesday', ethopianDate: 'ሐምሌ 16', topic: "Git 2: Branching, GitHub Workflow, Collaboration", description: "Advanced Git: branches, pull requests, merges, and teamwork." },
+  { id: 'session_05', week: '03', day: 'Sunday', ethopianDate: 'ሐምሌ 20', topic: "Time and Space Complexity", description: "Introduction to Big-O notation, runtime analysis." },
+  { id: 'session_06', week: '03', day: 'Wednesday', ethopianDate: 'ሐምሌ 23', topic: "Arrays, Lists and Matrices", description: "Basic array operations and 2D structures." },
+  { id: 'session_07', week: '04', day: 'Sunday', ethopianDate: 'ሐምሌ 27', topic: "Sorting I: Bubble, Selection, Insertion", description: "Classic sorting techniques." },
+  { id: 'session_08', week: '04', day: 'Wednesday', ethopianDate: 'ነሐሴ 01', topic: "Sorting Continued (Counting Sort, Stability, Practice)", description: "Explore advanced ideas in sorting." },
+  { id: 'session_09', week: '05', day: 'Sunday', ethopianDate: 'ነሐሴ 04', topic: "Linked Lists I", description: "Intro to singly linked lists, insertion, traversal." },
+  { id: 'session_10', week: '05', day: 'Wednesday', ethopianDate: 'ነሐሴ 07', topic: "Linked Lists II", description: "Doubly linked lists, reverse, practice." },
+  { id: 'session_11', week: '06', day: 'Sunday', ethopianDate: 'ነሐሴ 11', topic: "Greedy Algorithms", description: "Greedy techniques and optimality." },
+  { id: 'session_12', week: '06', day: 'Wednesday', ethopianDate: 'ነሐሴ 14', topic: "Two Pointer", description: "Two pointer technique: sorted arrays, pairs, ranges." },
+  { id: 'session_13', week: '07', day: 'Sunday', ethopianDate: 'ነሐሴ 18', topic: "Sliding Window", description: "Window-based optimizations." },
+  { id: 'session_14', week: '07', day: 'Wednesday', ethopianDate: 'ነሐሴ 21', topic: "Prefix Sum", description: "Prefix sums and range sum optimizations." },
+  { id: 'session_15', week: '08', day: 'Sunday', ethopianDate: 'ነሐሴ 25', topic: "Stacks, Queues and Monotonicity", description: "LIFO/FIFO, monotonic stacks." },
+  { id: 'session_16', week: '08', day: 'Wednesday', ethopianDate: 'ነሐሴ 28', topic: "Monotonicity Continued", description: "More problems with monotonic structures." },
+  { id: 'session_17', week: '09', day: 'Sunday', ethopianDate: 'ጷጉሜ 02', topic: "Leetcode Practice", description: "Solving problems together." },
+  { id: 'session_18', week: '09', day: 'Wednesday', ethopianDate: 'ጷጉሜ 05', topic: "Leetcode Practice Continued", description: "Final wrap-up with interview-style questions." }
+];
+
 
     const adminUID = 'admin-local';
     const isAdmin = localStorage.getItem('isAdmin') === 'true';
