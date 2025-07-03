@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -60,12 +61,12 @@
   <div id="app" class="container mx-auto p-4 md:p-8">
     <header class="text-center mb-8">
       <h1 class="text-3xl md:text-4xl font-bold text-gray-900">Course Booking Calendar</h1>
-      <p class="mt-2 text-lg text-gray-600">Please select your preferred week and topic.</p>
+      <p class="mt-2 text-lg text-gray-600">Please select your preferred session.</p>
       <p id="userIdDisplay" class="mt-2 text-xs text-gray-500 font-mono"></p>
       <button id="adminLogout" class="ml-4 text-red-600 underline hidden">Logout Admin</button>
     </header>
 
-    <div id="calendar-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    <div id="calendar-grid" class="space-y-8"></div>
 
     <div id="loader" class="text-center p-8">
       <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
@@ -99,42 +100,38 @@
     </div>
   </div>
 
-  <!-- Firebase SDK -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
     import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
     import { getFirestore, doc, setDoc, deleteDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-const topics = [
-  { id: 'session_01', week: '01', day: 'Sunday', ethopianDate: 'ሐምሌ 06', topic: "Python Basics, Conditionals, Loops & Functions", description: "Covers basic syntax, control flow, and function creation in Python." },
-  { id: 'session_02', week: '01', day: 'Wednesday', ethopianDate: 'ሐምሌ 09', topic: "Data Structures Basics: Lists & Tuples + Built-in Functions and Classes", description: "Understanding Python collections, built-in tools, and object introspection." },
-  { id: 'session_03', week: '02', day: 'Sunday', ethopianDate: 'ሐምሌ 13', topic: "Git 1: Git Basics, Commands, Repositories", description: "Learn Git commands, init, add, commit, and repository basics." },
-  { id: 'session_04', week: '02', day: 'Wednesday', ethopianDate: 'ሐምሌ 16', topic: "Git 2: Branching, GitHub Workflow, Collaboration", description: "Advanced Git: branches, pull requests, merges, and teamwork." },
-  { id: 'session_05', week: '03', day: 'Sunday', ethopianDate: 'ሐምሌ 20', topic: "Time and Space Complexity", description: "Introduction to Big-O notation, runtime analysis." },
-  { id: 'session_06', week: '03', day: 'Wednesday', ethopianDate: 'ሐምሌ 23', topic: "Arrays, Lists and Matrices", description: "Basic array operations and 2D structures." },
-  { id: 'session_07', week: '04', day: 'Sunday', ethopianDate: 'ሐምሌ 27', topic: "Sorting I: Bubble, Selection, Insertion", description: "Classic sorting techniques." },
-  { id: 'session_08', week: '04', day: 'Wednesday', ethopianDate: 'ነሐሴ 01', topic: "Sorting Continued (Counting Sort, Stability, Practice)", description: "Explore advanced ideas in sorting." },
-  { id: 'session_09', week: '05', day: 'Sunday', ethopianDate: 'ነሐሴ 04', topic: "Linked Lists I", description: "Intro to singly linked lists, insertion, traversal." },
-  { id: 'session_10', week: '05', day: 'Wednesday', ethopianDate: 'ነሐሴ 07', topic: "Linked Lists II", description: "Doubly linked lists, reverse, practice." },
-  { id: 'session_11', week: '06', day: 'Sunday', ethopianDate: 'ነሐሴ 11', topic: "Greedy Algorithms", description: "Greedy techniques and optimality." },
-  { id: 'session_12', week: '06', day: 'Wednesday', ethopianDate: 'ነሐሴ 14', topic: "Two Pointer", description: "Two pointer technique: sorted arrays, pairs, ranges." },
-  { id: 'session_13', week: '07', day: 'Sunday', ethopianDate: 'ነሐሴ 18', topic: "Sliding Window", description: "Window-based optimizations." },
-  { id: 'session_14', week: '07', day: 'Wednesday', ethopianDate: 'ነሐሴ 21', topic: "Prefix Sum", description: "Prefix sums and range sum optimizations." },
-  { id: 'session_15', week: '08', day: 'Sunday', ethopianDate: 'ነሐሴ 25', topic: "Stacks, Queues and Monotonicity", description: "LIFO/FIFO, monotonic stacks." },
-  { id: 'session_16', week: '08', day: 'Wednesday', ethopianDate: 'ነሐሴ 28', topic: "Monotonicity Continued", description: "More problems with monotonic structures." },
-  { id: 'session_17', week: '09', day: 'Sunday', ethopianDate: 'ጷጉሜ 02', topic: "Leetcode Practice", description: "Solving problems together." },
-  { id: 'session_18', week: '09', day: 'Wednesday', ethopianDate: 'ጷጉሜ 05', topic: "Leetcode Practice Continued", description: "Final wrap-up with interview-style questions." }
-];
-
+    const topics = [
+      { id: 'session_01', week: '01', day: 'Sunday', ethopianDate: 'ሐምሌ 06', topic: "Python Basics, Conditionals, Loops & Functions", description: "Covers basic syntax, control flow, and function creation in Python." },
+      { id: 'session_02', week: '01', day: 'Wednesday', ethopianDate: 'ሐምሌ 09', topic: "Data Structures Basics: Lists & Tuples + Built-in Functions and Classes", description: "Understanding Python collections, built-in tools, and object introspection." },
+      { id: 'session_03', week: '02', day: 'Sunday', ethopianDate: 'ሐምሌ 13', topic: "Git 1: Git Basics, Commands, Repositories", description: "Learn Git commands, init, add, commit, and repository basics." },
+      { id: 'session_04', week: '02', day: 'Wednesday', ethopianDate: 'ሐምሌ 16', topic: "Git 2: Branching, GitHub Workflow, Collaboration", description: "Advanced Git: branches, pull requests, merges, and teamwork." },
+      { id: 'session_05', week: '03', day: 'Sunday', ethopianDate: 'ሐምሌ 20', topic: "Time and Space Complexity", description: "Introduction to Big-O notation, runtime analysis." },
+      { id: 'session_06', week: '03', day: 'Wednesday', ethopianDate: 'ሐምሌ 23', topic: "Arrays, Lists and Matrices", description: "Basic array operations and 2D structures." },
+      { id: 'session_07', week: '04', day: 'Sunday', ethopianDate: 'ሐምሌ 27', topic: "Sorting I: Bubble, Selection, Insertion", description: "Classic sorting techniques." },
+      { id: 'session_08', week: '04', day: 'Wednesday', ethopianDate: 'ነሐሴ 01', topic: "Sorting Continued (Counting Sort, Stability, Practice)", description: "Explore advanced ideas in sorting." },
+      { id: 'session_09', week: '05', day: 'Sunday', ethopianDate: 'ነሐሴ 04', topic: "Linked Lists I", description: "Intro to singly linked lists, insertion, traversal." },
+      { id: 'session_10', week: '05', day: 'Wednesday', ethopianDate: 'ነሐሴ 07', topic: "Linked Lists II", description: "Doubly linked lists, reverse, practice." },
+      { id: 'session_11', week: '06', day: 'Sunday', ethopianDate: 'ነሐሴ 11', topic: "Greedy Algorithms", description: "Greedy techniques and optimality." },
+      { id: 'session_12', week: '06', day: 'Wednesday', ethopianDate: 'ነሐሴ 14', topic: "Two Pointer", description: "Two pointer technique: sorted arrays, pairs, ranges." },
+      { id: 'session_13', week: '07', day: 'Sunday', ethopianDate: 'ነሐሴ 18', topic: "Sliding Window", description: "Window-based optimizations." },
+      { id: 'session_14', week: '07', day: 'Wednesday', ethopianDate: 'ነሐሴ 21', topic: "Prefix Sum", description: "Prefix sums and range sum optimizations." },
+      { id: 'session_15', week: '08', day: 'Sunday', ethopianDate: 'ነሐሴ 25', topic: "Stacks, Queues and Monotonicity", description: "LIFO/FIFO, monotonic stacks." },
+      { id: 'session_16', week: '08', day: 'Wednesday', ethopianDate: 'ነሐሴ 28', topic: "Monotonicity Continued", description: "More problems with monotonic structures." },
+      { id: 'session_17', week: '09', day: 'Sunday', ethopianDate: 'ጷጉሜ 02', topic: "Leetcode Practice", description: "Solving problems together." },
+      { id: 'session_18', week: '09', day: 'Wednesday', ethopianDate: 'ጷጉሜ 05', topic: "Leetcode Practice Continued", description: "Final wrap-up with interview-style questions." }
+    ];
 
     const adminUID = 'admin-local';
     const isAdmin = localStorage.getItem('isAdmin') === 'true';
 
-    const adminLogoutBtn = document.getElementById('adminLogout');
     const calendarGrid = document.getElementById('calendar-grid');
     const loader = document.getElementById('loader');
     const modal = document.getElementById('booking-modal');
-    const modalText = document.getElementById('modal-text');
     const bookingForm = document.getElementById('booking-form');
     const cancelBtn = document.getElementById('cancel-booking');
     const bookingWeekIdInput = document.getElementById('booking-week-id');
@@ -142,17 +139,16 @@ const topics = [
 
     let db, auth;
     let userId = null;
-
+    
+    // Admin logout logic
+    const adminLogoutBtn = document.getElementById('adminLogout');
     if (isAdmin) {
       adminLogoutBtn.classList.remove('hidden');
-    } else {
-      adminLogoutBtn.classList.add('hidden');
     }
-
     adminLogoutBtn.addEventListener('click', () => {
       localStorage.removeItem('isAdmin');
       alert('Admin logged out.');
-      location.reload();  // reload page after logout to update UI
+      location.reload();
     });
 
     try {
@@ -173,50 +169,76 @@ const topics = [
       loader.textContent = 'Failed to load calendar. Please refresh the page.';
     }
 
+    // Function to group topics by week
+    function groupTopicsByWeek(topics) {
+      return topics.reduce((acc, topic) => {
+        (acc[topic.week] = acc[topic.week] || []).push(topic);
+        return acc;
+      }, {});
+    }
+
     function renderCalendar(bookings = {}) {
       calendarGrid.innerHTML = '';
-      topics.forEach(topic => {
-        const bookingInfo = bookings[topic.id];
-        const isBooked = !!bookingInfo;
+      const groupedWeeks = groupTopicsByWeek(topics);
 
-        const card = document.createElement('div');
-        card.className = `bg-white rounded-lg shadow-md p-6 flex flex-col transition-transform transform hover:scale-105 ${isBooked ? 'bg-gray-100' : ''}`;
+      for (const weekNumber in groupedWeeks) {
+        const weekSessions = groupedWeeks[weekNumber];
 
-        let buttonHtml = '';
-        let bookedByHtml = '';
+        // Create a container for the entire week
+        const weekContainer = document.createElement('div');
+        weekContainer.className = 'bg-white rounded-xl shadow-lg overflow-hidden transition-shadow hover:shadow-2xl';
+        
+        let sessionHTML = '';
 
-        if (isBooked) {
-          bookedByHtml = `<p class="text-sm text-red-600 font-semibold mt-2">Booked by: ${bookingInfo.name}</p>`;
+        weekSessions.forEach((topic, index) => {
+          const bookingInfo = bookings[topic.id];
+          const isBooked = !!bookingInfo;
 
-          if (isAdmin && bookingInfo.email) {
-            bookedByHtml += `<p class="text-sm text-gray-700">Email: ${bookingInfo.email}</p>`;
-          }
+          let buttonHtml = '';
+          let bookedByHtml = '';
 
-          if (bookingInfo.bookedBy === userId || isAdmin) {
-            buttonHtml = `<button data-week-id="${topic.id}" class="unbook-btn mt-auto w-full px-4 py-2 text-sm font-semibold text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">Unbook</button>`;
+          if (isBooked) {
+            bookedByHtml = `<p class="text-sm text-red-600 font-semibold mt-2">Booked by: ${bookingInfo.name}</p>`;
+            if (isAdmin && bookingInfo.email) {
+              bookedByHtml += `<p class="text-xs text-gray-500 mt-1">Email: ${bookingInfo.email}</p>`;
+            }
+            if (bookingInfo.bookedBy === userId || isAdmin) {
+              buttonHtml = `<button data-week-id="${topic.id}" class="unbook-btn mt-auto w-full px-4 py-2 text-sm font-semibold text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">Unbook</button>`;
+            } else {
+              buttonHtml = `<button disabled class="mt-auto w-full px-4 py-2 text-sm font-semibold text-white bg-gray-400 rounded-md cursor-not-allowed">Booked</button>`;
+            }
           } else {
-            buttonHtml = `<button disabled class="mt-auto w-full px-4 py-2 text-sm font-semibold text-white bg-gray-400 rounded-md cursor-not-allowed">Booked</button>`;
+            buttonHtml = `<button data-week-id="${topic.id}" class="book-btn mt-auto w-full px-4 py-2 text-sm font-semibold text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Book Session</button>`;
           }
-        } else {
-          buttonHtml = `<button data-week-id="${topic.id}" class="book-btn mt-auto w-full px-4 py-2 text-sm font-semibold text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Book</button>`;
-        }
 
-        card.innerHTML = `
-            <div class="flex justify-between items-start mb-2">
-                <span class="font-bold text-lg text-indigo-700">Week ${topic.week}</span>
-                <span class="amharic-date font-semibold text-gray-600">${topic.ethopianDate}</span>
+          sessionHTML += `
+            <div class="p-6 flex flex-col transition-transform transform hover:scale-105 ${isBooked ? 'bg-gray-100 rounded-lg' : ''}">
+                <div class="flex justify-between items-start mb-2">
+                    <span class="font-bold text-lg text-indigo-700">Session ${index + 1}</span>
+                    <span class="amharic-date font-semibold text-gray-600">${topic.ethopianDate}</span>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">${topic.topic}</h3>
+                <p class="text-gray-600 text-sm mb-4 flex-grow">${topic.description}</p>
+                ${bookedByHtml}
+                ${buttonHtml}
             </div>
-            <h3 class="text-xl font-bold text-gray-900 mb-2">${topic.topic}</h3>
-            <p class="text-gray-600 text-sm mb-4 flex-grow">${topic.description}</p>
-            ${bookedByHtml}
-            ${buttonHtml}
+          `;
+        });
+        
+        weekContainer.innerHTML = `
+          <div class="p-6 bg-indigo-50 border-b border-indigo-200">
+             <h2 class="text-2xl font-bold text-gray-800">Week ${weekNumber}</h2>
+          </div>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-6">
+            ${sessionHTML}
+          </div>
         `;
 
-        calendarGrid.appendChild(card);
-      });
+        calendarGrid.appendChild(weekContainer);
+      }
 
       loader.style.display = 'none';
-      calendarGrid.style.display = 'grid';
+      calendarGrid.style.display = 'block';
     }
 
     function closeModal() {
@@ -235,19 +257,12 @@ const topics = [
       const name = document.getElementById('userName').value.trim();
       const email = document.getElementById('userEmail').value.trim();
 
-      if (!weekId || !name || !email) {
-        console.error("Missing booking information");
-        return;
-      }
+      if (!weekId || !name || !email) return;
 
       try {
-        const bookingRef = doc(db, `artifacts/default-app-id/public/data/calendarBookings`, weekId);
+        const bookingRef = doc(db, "artifacts/default-app-id/public/data/calendarBookings", weekId);
         await setDoc(bookingRef, {
-          isBooked: true,
-          name: name,
-          email: email,
-          bookedBy: userId,
-          timestamp: new Date()
+          isBooked: true, name, email, bookedBy: userId, timestamp: new Date()
         });
         closeModal();
       } catch (error) {
@@ -258,7 +273,7 @@ const topics = [
 
     async function handleUnbook(weekId) {
       try {
-        const bookingRef = doc(db, `artifacts/default-app-id/public/data/calendarBookings`, weekId);
+        const bookingRef = doc(db, "artifacts/default-app-id/public/data/calendarBookings", weekId);
         await deleteDoc(bookingRef);
       } catch (error) {
         console.error("Error deleting booking: ", error);
@@ -267,13 +282,13 @@ const topics = [
     }
 
     calendarGrid.addEventListener('click', (e) => {
-      if (e.target.classList.contains('book-btn')) {
-        const weekId = e.target.dataset.weekId;
-        openModal(weekId);
-      }
+      const button = e.target.closest('button');
+      if (!button) return;
 
-      if (e.target.classList.contains('unbook-btn')) {
-        const weekId = e.target.dataset.weekId;
+      const weekId = button.dataset.weekId;
+      if (button.classList.contains('book-btn')) {
+        openModal(weekId);
+      } else if (button.classList.contains('unbook-btn')) {
         if (confirm("Are you sure you want to unbook this slot?")) {
           handleUnbook(weekId);
         }
@@ -282,21 +297,15 @@ const topics = [
 
     cancelBtn.addEventListener('click', closeModal);
     modal.addEventListener('click', (e) => {
-      if (e.target === modal) {
-        closeModal();
-      }
+      if (e.target === modal) closeModal();
     });
 
     onAuthStateChanged(auth, async (user) => {
       if (user || isAdmin) {
-        if (isAdmin) {
-          userId = adminUID;
-        } else {
-          userId = user.uid;
-        }
+        userId = isAdmin ? adminUID : user.uid;
         userIdDisplay.textContent = `Your User ID: ${userId} ${isAdmin ? '(Admin)' : ''}`;
 
-        const bookingsColRef = collection(db, `artifacts/default-app-id/public/data/calendarBookings`);
+        const bookingsColRef = collection(db, "artifacts/default-app-id/public/data/calendarBookings");
         onSnapshot(bookingsColRef, (snapshot) => {
           const bookings = {};
           snapshot.forEach((doc) => {
@@ -304,18 +313,17 @@ const topics = [
           });
           renderCalendar(bookings);
         }, (error) => {
-          console.error("Error listening to bookings collection:", error);
+          console.error("Error listening to bookings:", error);
           loader.textContent = 'Error loading calendar data.';
         });
-
       } else {
         userIdDisplay.textContent = 'Authenticating...';
         try {
-          if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-            await signInWithCustomToken(auth, __initial_auth_token);
-          } else {
-            await signInAnonymously(auth);
-          }
+            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+              await signInWithCustomToken(auth, __initial_auth_token);
+            } else {
+              await signInAnonymously(auth);
+            }
         } catch (error) {
           console.error("Authentication failed:", error);
           loader.textContent = 'Authentication failed. Please refresh.';
